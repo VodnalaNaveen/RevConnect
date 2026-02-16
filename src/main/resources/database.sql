@@ -165,5 +165,10 @@ ALTER TABLE users ADD (
 -- Update existing users to be public by default
 UPDATE users SET is_public = 1 WHERE is_public IS NULL;
 ALTER TABLE users MODIFY security_question VARCHAR2(500);
+ALTER TABLE users ADD (
+    business_category VARCHAR2(100),
+    creator_category VARCHAR2(100)
+);
 COMMIT;
-select * from notifications;
+select * from users;
+

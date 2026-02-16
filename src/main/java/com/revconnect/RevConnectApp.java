@@ -6,6 +6,8 @@ import com.revconnect.models.Comment;
 
 import java.util.List;
 import java.util.Scanner;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RevConnectApp {
     private static final Scanner sc = new Scanner(System.in);
@@ -18,10 +20,12 @@ public class RevConnectApp {
     private static final NotificationDAO notificationDAO = new NotificationDAO();
     private static final FollowDAO followDAO = new FollowDAO();
     private static final ConnectionDAO connectionDAO = new ConnectionDAO();
-
+    private static final Logger logger = LogManager.getLogger(RevConnectApp.class);
     private static User currentUser;
 
     public static void main(String[] args) {
+        logger.info("🚀 RevConnect Application Starting...");
+
         System.out.println("🚀 Welcome to RevConnect - Social Media Console App!");
         showMainMenu();
     }
@@ -56,13 +60,20 @@ public class RevConnectApp {
     }
 
     private static void register() {
+        logger.info("Registration attempt started");
         System.out.print("📧 Email: ");
         String email = sc.nextLine();
+        logger.debug("User entered email: {}", email);
         System.out.print("🔑 Password: ");
         String password = sc.nextLine();
+        if (password.length() < 6) {
+            System.out.println("❌ Password must be at least 6 characters long!");
+            logger.warn("Registration failed: Password too short");
+            return;
+        }
         System.out.print("👤 Username: ");
         String username = sc.nextLine();
-        System.out.print("👤 Name: ");
+        System.out.print("👤 FullName: ");
         String name = sc.nextLine();
         System.out.print("User Type (1=Personal, 2=Creator, 3=Business): ");
         int typeChoice = sc.nextInt();
@@ -80,28 +91,43 @@ public class RevConnectApp {
         }
 
         User user = new User(email, password, username, type, name);
+        if (type == User.UserType.BUSINESS) {
+            System.out.print("🏢 Business Industry/Category: ");
+            user.setBusinessCategory(sc.nextLine());
+        }
+        else if (type == User.UserType.CREATOR) {
+            System.out.print("🎨 Creator Category (Artist/Musician/Writer/etc): ");
+            user.setCreatorCategory(sc.nextLine());
+        }
         user.setSecurityQuestion("What is your mother's maiden name?");
         user.setSecurityAnswer("default");
         user.setPasswordHint("You set this during registration");
         if (userDAO.register(user)) {
             System.out.println("✅ Registration successful!");
             System.out.println("💡 Please update your security questions in the Security & Privacy menu.");
+            logger.info("User registered successfully: {}", email);
         } else {
             System.out.println("❌ Registration failed. Email/username may already exist.");
+
+            logger.error("Registration failed for email: {}", email);
         }
     }
 
     private static void login() {
+        logger.info("Login attempt");
         System.out.print("📧 Email/Username: ");
         String emailOrUsername = sc.nextLine();
+        logger.debug("Login attempt for: {}", emailOrUsername);
         System.out.print("🔑 Password: ");
         String password = sc.nextLine();
 
         currentUser = userDAO.login(emailOrUsername, password);
         if (currentUser != null) {
+            logger.info("User logged in successfully: {}", currentUser.getUsername());
             System.out.println("✅ Welcome back, @" + currentUser.getUsername() + "!");
             showUserMenu();
         } else {
+            logger.warn("Failed login attempt for: {}", emailOrUsername);
             System.out.println("❌ Invalid credentials!");
         }
     }

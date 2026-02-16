@@ -10,7 +10,10 @@ public class UserDAO {
     private static final String HASH_PREFIX = "revconnect_";
 
 public boolean register(User user) {
-    String sql = "INSERT INTO users (email, password, username, user_type, name, security_question, security_answer, password_hint) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+//    String sql = "INSERT INTO users (email, password, username, user_type, name, security_question, security_answer, password_hint) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO users (email, password, username, user_type, name, " +
+            "business_category, creator_category, security_question, security_answer, password_hint) " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     try (Connection conn = DatabaseUtil.getConnection();
          PreparedStatement pstmt = conn.prepareStatement(sql, new String[]{"ID"})) {
 
@@ -19,11 +22,11 @@ public boolean register(User user) {
         pstmt.setString(3, user.getUsername());
         pstmt.setString(4, user.getUserType().name());
         pstmt.setString(5, user.getName());
-
-        // THESE 3 LINES ARE CRITICAL:
-        pstmt.setString(6, user.getSecurityQuestion());
-        pstmt.setString(7, hashPassword(user.getSecurityAnswer()));  // Hash the security answer too!
-        pstmt.setString(8, user.getPasswordHint());
+        pstmt.setString(6, user.getBusinessCategory());
+        pstmt.setString(7, user.getCreatorCategory());
+        pstmt.setString(8, user.getSecurityQuestion());
+        pstmt.setString(9, hashPassword(user.getSecurityAnswer()));
+        pstmt.setString(10, user.getPasswordHint());
 
         int rows = pstmt.executeUpdate();
         if (rows > 0) {
@@ -228,21 +231,6 @@ public boolean register(User user) {
         }
     }
 
-//    public String getPasswordHint(String email) {
-//        String sql = "SELECT password_hint FROM users WHERE email = ?";
-//        try (Connection conn = DatabaseUtil.getConnection();
-//             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-//
-//            pstmt.setString(1, email);
-//            ResultSet rs = pstmt.executeQuery();
-//            if (rs.next()) {
-//                return rs.getString("password_hint");
-//            }
-//        } catch (SQLException e) {
-//            // Silent fail
-//        }
-//        return null;
-//    }
 
     public String getSecurityQuestion(String email) {
         String sql = "SELECT security_question FROM users WHERE email = ?";

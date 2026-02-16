@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.*;
 
 public class ConnectionDAO {
-
     private UserDAO userDAO = new UserDAO();
     private NotificationDAO notificationDAO = new NotificationDAO();
 

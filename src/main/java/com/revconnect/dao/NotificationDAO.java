@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NotificationDAO {
-
     public boolean createNotification(int userId, String type, String message) {
         String sql = "INSERT INTO notifications (user_id, type, message) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseUtil.getConnection();

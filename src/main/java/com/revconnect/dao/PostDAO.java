@@ -3,13 +3,11 @@ package com.revconnect.dao;
 import com.revconnect.entities.Post;
 import com.revconnect.entities.User;
 import com.revconnect.utils.DatabaseUtil;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PostDAO {
-
     public boolean createPost(Post post) {
         String sql = "INSERT INTO posts (user_id, content, hashtags, is_promotional) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseUtil.getConnection();

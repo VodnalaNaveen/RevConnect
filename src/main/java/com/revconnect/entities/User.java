@@ -19,6 +19,8 @@ public class User {
     private String contactInfo;
     private String businessHours;
     private LocalDateTime createdAt;
+    private String businessCategory;
+    private String creatorCategory;
     private boolean isPrivate;
     private String securityQuestion;
     private String securityAnswer;
@@ -88,7 +90,11 @@ public class User {
 
     public String getSecurityAnswer() { return securityAnswer; }
     public void setSecurityAnswer(String securityAnswer) { this.securityAnswer = securityAnswer; }
+    public String getBusinessCategory() { return businessCategory; }
+    public void setBusinessCategory(String businessCategory) { this.businessCategory = businessCategory; }
 
+    public String getCreatorCategory() { return creatorCategory; }
+    public void setCreatorCategory(String creatorCategory) { this.creatorCategory = creatorCategory; }
     public String getPasswordHint() { return passwordHint; }
     public void setPasswordHint(String passwordHint) { this.passwordHint = passwordHint; }
 
